@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@aws-cdk/cloudformation-diff": "^2.29.1",
+    "chalk": "*",
     "commander": "*",
     "json-diff": "^0.9.0"
   },

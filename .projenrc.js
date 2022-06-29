@@ -5,7 +5,8 @@ const project = new javascript.NodeProject({
   deps: [
     '@aws-cdk/cloudformation-diff',
     'json-diff',
-    'commander'
+    'commander',
+    'chalk'
   ],                /* Runtime dependencies of this module. */
   description: 'Utility to compare two cdk.out folders',  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
@@ -14,6 +15,9 @@ const project = new javascript.NodeProject({
     'cld': './cld.js',
     'cdk-local-diff': './cld.js',
   },
+  gitignore: [
+    'test/cdk.*'
+  ]
 });
 project.addFields({'type': 'module'});
 project.synth();

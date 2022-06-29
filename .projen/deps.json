@@ -29,6 +29,10 @@
       "type": "runtime"
     },
     {
+      "name": "chalk",
+      "type": "runtime"
+    },
+    {
       "name": "commander",
       "type": "runtime"
     },

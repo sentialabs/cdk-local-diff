@@ -1,23 +1,18 @@
 #! /usr/bin/env node
 import * as commander from 'commander';
 import * as cfdiff from '@aws-cdk/cloudformation-diff';
-// const diff_template = require('@aws-cdk/cloudformation-diff/lib/diff-template');
-// const diff = require('@aws-cdk/cloudformation-diff');
-// const jsonDiff = require('json-diff');
 import * as jsonDiff from 'json-diff'
 import * as fs from 'fs';
 import { stdout } from 'process';
-// const fs = require('fs');
+import chalk from 'chalk';
 
 const cli = new commander.Command
 cli.description("Compares two cdk.out folders");
 cli.addHelpCommand(true);
 cli.helpOption(true);
 cli.argument('<folder1>', 'original cdk.out foler');
-cli.argument('<folder2>', 'changed cdk.out foler');
+cli.argument('<folder2>', 'updated cdk.out foler');
 cli.option('-o|--outfile <file>', 'file to write to');
-cli.option('-f|--output-format <html|txt>', 'output format');
-cli.option('-n|--no-color', 'don\'t output colors');
 cli.action((folder1, folder2, options) => {
   if (options.outfile) {
     var output = fs.createWriteStream(options.outfile);
@@ -32,7 +27,7 @@ function loadFile(fileName) {
   try {
     var file = fs.readFileSync(fileName);
   } catch {
-    console.log(`Template ${fileName} not found, returning empty object.`);
+    console.log(chalk.yellow(`Template ${fileName} not found, returning empty object.`));
     return {};
   };
   return JSON.parse(file);  
@@ -117,10 +112,11 @@ function compare(current, updated, output) {
   let curState = buildTree(current);
   let updatedState = buildTree(updated);
   let treeDifference = jsonDiff.diffString(curState, updatedState);
+  title('Cdk.out structure changes', output)
   if (Object.keys(treeDifference).length > 0 ) {
     console.log(treeDifference);
   } else {
-    console.log('no difference in structure');
+    write('No difference in structure\n', output, 'green');
   };
   let templates = parseChildren(updatedState);
   templates.forEach(template => {
@@ -139,4 +135,16 @@ function parseChildren(tree) {
   return templates;
 };
 
-// compare('cdk.out','cdk.new-default');
+function write(string, output, color) {
+  let nl = '\n';
+  try {
+    chalk[color]();
+  } catch {
+    color = 'white';
+  };
+  output.write(chalk[color](string+nl))
+}
+
+function title(string, output, color) {
+  write(chalk.underline.bold(string), output, color)
+}
