@@ -1,11 +1,19 @@
-const { javascript } = require("projen");
+import { javascript } from 'projen';
 const project = new javascript.NodeProject({
   defaultReleaseBranch: "main",
   name: "cdk-local-diff",
-
-  // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
+  deps: [
+    '@aws-cdk/cloudformation-diff',
+    'json-diff',
+    'commander'
+  ],                /* Runtime dependencies of this module. */
+  description: 'Utility to compare two cdk.out folders',  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  packageName: 'cdk-local-diff',  /* The "name" in package.json. */
+  bin: {
+    'cld': './cld.js',
+    'cdk-local-diff': './cld.js',
+  },
 });
+project.addFields({'type': 'module'});
 project.synth();
